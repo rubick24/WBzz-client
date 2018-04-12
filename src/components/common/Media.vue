@@ -7,6 +7,7 @@
       </p>
       <p v-if="user.addr">{{ user.addr }}</p>
       <p v-if="user.description">{{ user.description }}</p>
+      <p v-if="user.follow_count">关注：{{ user.follow_count }} 粉丝：{{ user.fans_count }} </p>
       <p v-if="isTarget">
         <a :href="userUrl(user.uid)" target="_blank">
           {{ user.gender==='m'?'他':'她' }}的主页

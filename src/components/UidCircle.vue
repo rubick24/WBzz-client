@@ -4,7 +4,8 @@
       <text-input
         name="query"
         placeholder="用户uid"
-        v-model.trim="query"
+        type="number"
+        v-model.number="query"
         @keyup.enter.native="request"
       />
       <div style="text-align:center;padding-top:20px">
@@ -15,13 +16,13 @@
         />
       </div>
     </card>
-    <div v-if="msg.length>0">
-      {{ msg }}
-    </div>
     <div class="container" v-show="isLoading">
       <loading/>
     </div>
-    <div v-if="!isLoading && tuser.uid">
+    <card v-if="!isLoading && msg.length>0" class="msg">
+      Error: {{ msg }}
+    </card>
+    <div v-if="!isLoading && msg.length<1 && tuser.uid">
       <section class="target-user">
         <h3>目标用户</h3>
         <media :user="tuser" :isTarget="true"/>
@@ -74,6 +75,7 @@ export default {
         .then((response) => {
           console.log(response.data)
           if (response.data.error === 0) {
+            self.msg = ''
             self.tuser = response.data.data.user
             self.result = response.data.data.circle
           } else {
@@ -129,5 +131,12 @@ export default {
   h3 {
     text-align: center;
     margin: 0;
+  }
+  .msg {
+    margin: 20px;
+    padding: 20px;
+    background: #FF5252;
+    color: #FFF;
+    text-align: center;
   }
 </style>

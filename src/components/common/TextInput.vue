@@ -1,13 +1,13 @@
 <template>
   <div class="text-input">
-    <input type="text" :value="value" :placeholder="placeholder" @input="emitInput($event.target.value)">
+    <input :value="value" :type="type" :placeholder="placeholder" @input="emitInput($event.target.value)">
   </div>
 
 </template>
 <script>
 export default {
   name: 'TextInput',
-  props: ['value', 'placeholder'],
+  props: ['value', 'placeholder', 'type'],
   methods: {
     emitInput (value) {
       this.$emit('input', value)
@@ -41,6 +41,11 @@ export default {
   }
   input::-webkit-input-placeholder, input::-webkit-input-placeholder {
     text-align: center;
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
   }
 
 </style>

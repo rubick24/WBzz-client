@@ -4,6 +4,7 @@
       <text-input
         name="query"
         placeholder="新浪微博用户名"
+        type="text"
         v-model.trim="name"
         @keyup.enter.native="toName"
       />
@@ -13,7 +14,8 @@
       <text-input
         name="query"
         placeholder="用户uid(微博链接'/u/'后的数字)"
-        v-model.trim="uid"
+        type="number"
+        v-model.number="uid"
         @keyup.enter.native="toUid"
       />
     </card>

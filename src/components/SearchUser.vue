@@ -4,6 +4,7 @@
       <text-input
         name="query"
         placeholder="新浪微博用户名"
+        type="text"
         v-model.trim="query"
         @keyup.enter.native="request"
       />
@@ -11,7 +12,10 @@
     <div class="container" v-show="isLoading">
       <loading/>
     </div>
-    <div v-show="!isLoading">
+    <card v-if="!isLoading && msg.length>0" class="msg">
+      Error: {{ msg }}
+    </card>
+    <div v-show="!isLoading && msg.length<1">
       <div class="container">
         <media v-for="user in result" :key="user.uid" :user="user"/>
       </div>
@@ -34,6 +38,7 @@ export default {
     return {
       query: '',
       isLoading: false,
+      msg: '',
       result: []
     }
   },
@@ -49,7 +54,10 @@ export default {
         .then((response) => {
           console.log(response.data)
           if (response.data.error === 0) {
+            self.msg = ''
             self.result = response.data.data
+          } else {
+            self.msg = response.data.msg
           }
           self.isLoading = false
         })
@@ -92,5 +100,12 @@ export default {
     padding: 40px 20px;
     justify-content: center;
     align-items: center;
+  }
+  .msg {
+    margin: 20px;
+    padding: 20px;
+    background: #FF5252;
+    color: #FFF;
+    text-align: center;
   }
 </style>
