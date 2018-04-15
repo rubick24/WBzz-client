@@ -7,7 +7,11 @@
 <script>
 export default {
   name: 'CheckBox',
-  props: ['id', 'label', 'value']
+  props: {
+    id: String,
+    label: String,
+    value: Boolean
+  }
 }
 </script>
 <style scoped>

@@ -1,17 +1,15 @@
 <template>
   <div class="text-input">
-    <input :value="value" :type="type" :placeholder="placeholder" @input="emitInput($event.target.value)">
+    <input :type="type" :placeholder="placeholder" :value="value" @input="$emit('input', $event.target.value)">
   </div>
-
 </template>
 <script>
 export default {
   name: 'TextInput',
-  props: ['value', 'placeholder', 'type'],
-  methods: {
-    emitInput (value) {
-      this.$emit('input', value)
-    }
+  props: {
+    value: null,
+    placeholder: String,
+    type: String
   }
 }
 </script>
