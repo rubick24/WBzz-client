@@ -12,27 +12,29 @@
         <check-box
           id='cb'
           label='查询地区（耗时较长）'
-          v-model="with_addr"
+          v-model="withAddr"
         />
       </div>
     </card>
-    <div class="container" v-show="isLoading">
-      <loading/>
-    </div>
+
+    <section v-if="tuser && tuser.screen_name" class="target-user">
+      <h3>目标用户</h3>
+      <media :user="tuser" :isTarget="true"/>
+    </section>
+
     <card v-if="!isLoading && msg.length>0" class="msg">
       Error: {{ msg }}
     </card>
-    <div v-if="!isLoading && msg.length<1 && tuser.uid">
-      <section class="target-user">
-        <h3>目标用户</h3>
-        <media :user="tuser" :isTarget="true"/>
-      </section>
-      <section>
-        <h3>他的好友圈 共{{ result.length }}人 </h3>
-        <div class="container" >
-          <media v-for="user in result" :key="user.uid" :user="user"/>
-        </div>
-      </section>
+
+    <section v-if="!isLoading && circle && circle.length > 0">
+      <h3>他的好友圈 共{{ circle.length }}人 </h3>
+      <div class="container" >
+        <media v-for="user in circle" :key="user.uid" :user="user"/>
+      </div>
+    </section>
+
+    <div class="container" v-show="isLoading">
+      <loading/>
     </div>
   </main>
 </template>
@@ -42,7 +44,6 @@ import Card from './common/Card'
 import Loading from './common/Loading'
 import Media from './common/Media'
 import CheckBox from './common/CheckBox'
-import axios from 'axios'
 
 export default {
   name: 'UidCircle',
@@ -53,10 +54,16 @@ export default {
     return {
       query: '',
       isLoading: false,
-      with_addr: false,
-      msg: '',
-      tuser: {},
-      result: []
+      withAddr: false,
+      msg: ''
+    }
+  },
+  computed: {
+    tuser () {
+      return this.$store.state.target
+    },
+    circle () {
+      return this.$store.state.circle
     }
   },
   methods: {
@@ -64,27 +71,26 @@ export default {
       if (e) {
         e.target.blur()
       }
+      let target = this.$store.state.searchResult.find(user => user.uid === this.query)
+      if (target) {
+        this.$store.commit('setTarget', target)
+      } else {
+        this.$store.commit('setTarget', {uid: this.query})
+      }
       this.isLoading = true
       let self = this
-      let url = '/api/uid/' + this.query
-      if (this.with_addr) {
-        url = url + '?with_addr=1'
-      }
-      console.log(url)
-      axios.get(url)
-        .then((response) => {
-          console.log(response.data)
-          if (response.data.error === 0) {
-            self.msg = ''
-            self.tuser = response.data.data.user
-            self.result = response.data.data.circle
-          } else {
-            self.msg = response.data.msg
-          }
+      this.$store.dispatch('getCircle', this.withAddr)
+        .then((data) => {
+          self.msg = ''
           self.isLoading = false
         })
         .catch((error) => {
           console.log(error)
+          if (error.response) {
+            self.msg = error.response.data.msg
+          } else {
+            self.msg = error.message
+          }
           self.isLoading = false
         })
     }

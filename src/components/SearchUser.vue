@@ -9,16 +9,19 @@
         @keyup.enter.native="request"
       />
     </card>
-    <div class="container" v-show="isLoading">
-      <loading/>
-    </div>
+
     <card v-if="!isLoading && msg.length>0" class="msg">
       Error: {{ msg }}
     </card>
+
     <div v-show="!isLoading && msg.length<1">
       <div class="container">
         <media v-for="user in result" :key="user.uid" :user="user"/>
       </div>
+    </div>
+
+    <div class="container" v-show="isLoading">
+      <loading/>
     </div>
   </main>
 </template>
@@ -27,7 +30,6 @@ import TextInput from './common/TextInput'
 import Card from './common/Card'
 import Loading from './common/Loading'
 import Media from './common/Media'
-import axios from 'axios'
 
 export default {
   name: 'SearchUser',
@@ -38,8 +40,12 @@ export default {
     return {
       query: '',
       isLoading: false,
-      msg: '',
-      result: []
+      msg: ''
+    }
+  },
+  computed: {
+    result () {
+      return this.$store.state.searchResult
     }
   },
   methods: {
@@ -49,20 +55,19 @@ export default {
       }
       this.isLoading = true
       let self = this
-      let url = '/api/name/' + this.query
-      axios.get(url)
-        .then((response) => {
-          console.log(response.data)
-          if (response.data.error === 0) {
-            self.msg = ''
-            self.result = response.data.data
-          } else {
-            self.msg = response.data.msg
-          }
+      this.$store.commit('setNameQuery', this.query)
+      this.$store.dispatch('getSearchResult')
+        .then((data) => {
+          self.msg = ''
           self.isLoading = false
         })
         .catch((error) => {
           console.log(error)
+          if (error.response) {
+            self.msg = error.response.data.msg
+          } else {
+            self.msg = error.message
+          }
           self.isLoading = false
         })
     }

@@ -1,6 +1,6 @@
 <template>
   <card class="media" :class="isTarget?'target':'common'">
-      <img class="avatar" :src="user.profile_image_url">
+      <img v-if="user.profile_image_url" class="avatar" :src="user.profile_image_url">
       <p class="name">
         {{ user.screen_name }}
         <span>{{ user.gender==='m'?'♂':'♀' }}</span>
@@ -39,9 +39,6 @@ export default {
   methods: {
     userUrl (uid) {
       return 'https://weibo.com/u/' + uid
-    },
-    crUrl (uid) {
-      return '/'
     }
   }
 }
