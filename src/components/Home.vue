@@ -39,10 +39,18 @@ export default {
   },
   methods: {
     toName (e) {
-      this.$router.push({ name: 'SearchUser', params: { name: this.name } })
+      if (this.name) {
+        this.$router.push({ name: 'SearchUser', params: { name: this.name } })
+      } else {
+        this.$router.push({ name: 'SearchUser' })
+      }
     },
     toUid (e) {
-      this.$router.push({ name: 'UidCircle', params: { uid: this.uid } })
+      if (this.uid) {
+        this.$router.push({ name: 'UidCircle', params: { uid: this.uid } })
+      } else {
+        this.$router.push({ name: 'UidCircle' })
+      }
     }
   }
 }

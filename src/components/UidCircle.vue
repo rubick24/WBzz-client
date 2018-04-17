@@ -17,21 +17,22 @@
       </div>
     </card>
 
-    <section v-if="tuser && tuser.screen_name" class="target-user">
-      <h3>目标用户</h3>
-      <media :user="tuser" :isTarget="true"/>
-    </section>
-
     <card v-if="!isLoading && msg.length>0" class="msg">
       Error: {{ msg }}
     </card>
 
-    <section v-if="!isLoading && circle && circle.length > 0">
-      <h3>他的好友圈 共{{ circle.length }}人 </h3>
-      <div class="container" >
-        <media v-for="user in circle" :key="user.uid" :user="user"/>
-      </div>
-    </section>
+    <div v-if="msg.length<1">
+      <section v-if="tuser && tuser.screen_name" class="target-user">
+        <h3>目标用户</h3>
+        <media :user="tuser" :isTarget="true"/>
+      </section>
+      <section v-if="!isLoading && circle && circle.length > 0">
+        <h3>他的好友圈 共{{ circle.length }}人 </h3>
+        <div class="container" >
+          <media v-for="user in circle" :key="user.uid" :user="user"/>
+        </div>
+      </section>
+    </div>
 
     <div class="container" v-show="isLoading">
       <loading/>
@@ -71,6 +72,10 @@ export default {
       if (e) {
         e.target.blur()
       }
+      if (!this.query) {
+        this.msg = 'uid不能为空'
+        return
+      }
       let target = this.$store.state.searchResult.find(user => user.uid === this.query)
       if (target) {
         this.$store.commit('setTarget', target)
@@ -86,7 +91,7 @@ export default {
         })
         .catch((error) => {
           console.log(error)
-          if (error.response) {
+          if (error.response && error.response.data.msg) {
             self.msg = error.response.data.msg
           } else {
             self.msg = error.message

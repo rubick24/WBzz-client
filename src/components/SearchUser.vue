@@ -53,6 +53,10 @@ export default {
       if (e) {
         e.target.blur()
       }
+      if (!this.query) {
+        this.msg = '用户名不能为空'
+        return
+      }
       this.isLoading = true
       let self = this
       this.$store.commit('setNameQuery', this.query)
@@ -63,7 +67,7 @@ export default {
         })
         .catch((error) => {
           console.log(error)
-          if (error.response) {
+          if (error.response && error.response.data.msg) {
             self.msg = error.response.data.msg
           } else {
             self.msg = error.message

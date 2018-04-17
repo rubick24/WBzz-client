@@ -12,16 +12,12 @@
 </template>
 <script>
 export default {
-  name: 'NavBar',
-  data () {
-    return {
-
-    }
-  }
+  name: 'NavBar'
 }
 </script>
 <style scoped>
   .nav-bar {
+    z-index: 1;
     background: #FFF;
     color: #666;
     height: 60px;
